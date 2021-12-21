@@ -1,0 +1,88 @@
+﻿@import "./normalize.css";
+/*清除元素默认的内外边距  */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/*让所有斜体 不倾斜*/
+
+em,
+i {
+  font-style: normal;
+}
+
+/*去掉列表前面的小点*/
+
+li {
+  list-style: none;
+}
+
+/*图片没有边框   去掉图片底侧的空白缝隙*/
+
+img {
+  border: 0;
+  /*ie6*/
+  vertical-align: middle;
+}
+
+/*取消链接的下划线*/
+
+a {
+  color: #666;
+  text-decoration: none;
+}
+button,
+input {
+  font-family: "Microsoft YaHei", "Heiti SC", tahoma, arial, "Hiragino Sans GB",
+    \\5b8b\4f53, sans-serif;
+}
+body {
+  width: 100vw;
+  user-select: none; /* 禁止用户鼠标在页面上选中文字/图片等 */
+  background-color: #fff;
+  color: #666;
+  font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB",
+    "Microsoft YaHei", "微软雅黑", Arial, sans-serif;
+  -webkit-tap-highlight-color: transparent; /* webkit是苹果浏览器引擎，tap点击，highlight背景高亮，color颜色，颜色用数值调节 */
+  /* rem vw/vh */
+  /* overflow: hidden; */
+}
+.hide,
+.none {
+  display: none;
+}
+
+/*清除浮动*/
+
+.clearfix:after {
+  visibility: hidden;
+  clear: both;
+  display: block;
+  content: ".";
+  height: 0;
+}
+.clearfix {
+  *zoom: 1;
+}
+
+/* 字体图标 */
+
+@font-face {
+  font-family: "iconfont"; /* Project id 2977478 */
+  src: url("//at.alicdn.com/t/font_2977478_ym7lcj68v.woff2?t=1639554832216")
+      format("woff2"),
+    url("//at.alicdn.com/t/font_2977478_ym7lcj68v.woff?t=1639554832216")
+      format("woff"),
+    url("//at.alicdn.com/t/font_2977478_ym7lcj68v.ttf?t=1639554832216")
+      format("truetype");
+}
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
