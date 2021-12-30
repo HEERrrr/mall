@@ -2,11 +2,15 @@
   <div class="tab_control">
     <div
       v-for="(item, index) in titles"
-      :key="item"
+      :key="index"
       class="tab_control_item"
       @click="getIndex(index)"
     >
-      <span :class="{ active: index === currentIndex }">{{ item }}</span>
+      <span
+        :class="{ active: this.currentIndex === index }"
+        :style="{ borderColor: borderColor }"
+        >{{ item }}
+      </span>
     </div>
   </div>
 </template>
@@ -19,6 +23,14 @@ export default {
       default() {
         return [];
       },
+    },
+    borderColor: {
+      type: String,
+      default: "#ff5777",
+    },
+    // 接收父组件传值
+    ParentCurrentIndex: {
+      type: Number,
     },
   },
   data() {
@@ -51,6 +63,6 @@ export default {
 }
 .active {
   color: #ff5777;
-  border-bottom: 3px solid #ff5777;
+  border-bottom: 3px solid;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div v-if="$route.meta.showTabBar">
     <tab-bar>
       <tab-bar-item path="/home">
         <template #item_icon>&#xe639;</template>

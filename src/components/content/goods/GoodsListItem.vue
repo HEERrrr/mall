@@ -1,19 +1,12 @@
 <template>
   <div class="goods_item" @click="itemClick">
-    <!-- <a :href="goodsItem.link"> -->
-    <img
-      :src="goodsItem.show.img"
-      alt=""
-      @load="imageLoad"
-      @imageLoad="imageLoad"
-    />
+    <img :src="showImage" alt="" @load="imageLoad" />
     <div class="goods_info">
       <p>{{ goodsItem.title }}</p>
       <span class="price">{{ goodsItem.price }}</span>
-      <i class="iconfont">&#xe601;</i>
+      <i class="iconfont">&#xe8b9;</i>
       <span>{{ goodsItem.cfav }}</span>
     </div>
-    <!-- </a> -->
     <div class="info"></div>
   </div>
 </template>
@@ -31,8 +24,11 @@ export default {
   methods: {
     // 监听图片加载完成
     imageLoad() {
-      // 发送自定义事件让Home.vue接收
-      this.$emit("imageLoad");
+      if (this.$route.path.indexOf("/home") == 0) {
+        this.$emit("hImageLoad");
+      } else if (this.$route.path.indexOf("/detail") == 0) {
+        this.$emit("dImageLoad");
+      }
       /**
        *拿到store中Home.vue传过去的scroll
        *this.$store.state.scroll.refresh();
@@ -40,6 +36,14 @@ export default {
     },
     itemClick() {
       this.$router.push("/detail/" + this.goodsItem.iid);
+    },
+  },
+  computed: {
+    showImage() {
+      /* return this.goodsItem.image
+        ? this.goodsItem.image
+        : this.goodsItem.show.img; */
+      return this.goodsItem.image || this.goodsItem.show.img;
     },
   },
 };
@@ -68,7 +72,7 @@ export default {
   color: #ff5777;
 }
 .goods_item .iconfont {
-  font-size: 12px;
+  font-size: 13px;
   margin: 0 2px 0 10px;
 }
 </style>

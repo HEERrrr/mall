@@ -14,18 +14,30 @@ const routes = [
   {
     path: "/home",
     component: Home,
+    meta: {
+      showTabBar: true,
+    },
   },
   {
     path: "/category",
     component: Category,
+    meta: {
+      showTabBar: true,
+    },
   },
   {
     path: "/cart",
     component: Cart,
+    meta: {
+      showTabBar: true,
+    },
   },
   {
     path: "/profile",
     component: Profile,
+    meta: {
+      showTabBar: true,
+    },
   },
   {
     path: "/detail/:iid",

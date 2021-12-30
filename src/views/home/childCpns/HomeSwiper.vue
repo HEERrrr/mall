@@ -32,7 +32,7 @@ export default {
   },
   methods: {
     imageLoad() {
-      // 如果图片还没加载完发送事件，并改为true，表示已加载
+      // 如果图片还没加载,发送事件，并改为true，表示已加载
       // 这样只用发送一次事件
       if (!this.isLoad) {
         this.$emit("imageLoad");

@@ -1,6 +1,6 @@
 <template>
   <div id="home">
-    <nav-bar class="home_nav">
+    <nav-bar class="home_nav" ref="navBar">
       <template #center>购物街</template>
     </nav-bar>
     <!-- 复制tab-control,障眼法实现粘顶 -->
@@ -29,7 +29,7 @@
       />
       <goods-list
         :goodsList="goods[currentType].list"
-        @imageLoad="goodsImageLoad"
+        @hImageLoad="goodsImageLoad"
       />
     </scroll>
     <back-top @click.native="backTop" v-show="isShowBackTop" />
@@ -47,10 +47,11 @@ import RecommendView from "./childCpns/RecommendView.vue";
 import FeatureView from "./childCpns/FeatureView.vue";
 
 import { getHomeMultidata, getHomeGoods } from "network/home.js";
-import { debounce } from "common/utils.js";
+import { goodsItemMixin } from "common/mixin.js";
 
 export default {
   name: "home",
+  mixins: [goodsItemMixin],
   components: {
     NavBar,
     Scroll,
@@ -85,14 +86,6 @@ export default {
     this.getHomeGoods("new");
     this.getHomeGoods("sell");
   },
-  mounted() {
-    // 将scroll作为参数传到vuex,使GoodsListItem.vue能通过this.$store拿到scroll
-    /* const scroll = this.$refs.scroll.scroll;
-    this.$store.commit("getScroll", scroll); */
-
-    // 调用防抖动函数
-    this.refresh = debounce(this.$refs.scroll.refresh, 50);
-  },
   methods: {
     /**
      * 事件监听方法
@@ -120,14 +113,14 @@ export default {
       // 判断backTop是否显示
       this.isShowBackTop = -position.y > 950;
       // 判断复制tabControl是否显示
-      this.isShowTabControl = -position.y >= this.tabControlOffsetTop - 44;
+      this.isShowTabControl =
+        -position.y >= this.tabControlOffsetTop - this.navBarHeight;
     },
     LoadMore() {
+      // 滚动到底部再发送一次网络请求，获取新的数据
       this.getHomeGoods(this.currentType);
     },
-    // 接收GoodsListItem的自定义事件
     goodsImageLoad() {
-      // this.$refs.scroll.refresh();
       this.refresh();
     },
     swiperImageLoad() {
@@ -174,6 +167,7 @@ export default {
 }
 .wrapper {
   height: calc(100% - 49px);
+  overflow: hidden;
 }
 .tab_control2 {
   position: fixed;
