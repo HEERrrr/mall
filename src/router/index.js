@@ -12,36 +12,48 @@ const routes = [
     redirect: "/home",
   },
   {
+    name: "home",
+    id: 0,
     path: "/home",
     component: Home,
     meta: {
-      showTabBar: true,
+      showMainTabBar: true,
     },
   },
   {
+    name: "category",
+    id: 1,
     path: "/category",
     component: Category,
     meta: {
-      showTabBar: true,
+      showMainTabBar: true,
     },
   },
   {
+    name: "cart",
+    id: 2,
     path: "/cart",
     component: Cart,
     meta: {
-      showTabBar: true,
+      showMainTabBar: true,
+      showLeft: false,
     },
   },
   {
+    name: "profile",
+    id: 3,
     path: "/profile",
     component: Profile,
     meta: {
-      showTabBar: true,
+      showMainTabBar: true,
     },
   },
   {
     path: "/detail/:iid",
     component: Detail,
+    meta: {
+      showLeft: true,
+    },
   },
 ];
 

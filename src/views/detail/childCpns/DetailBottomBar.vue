@@ -12,7 +12,7 @@
       <template #item_icon>&#xe8b9;</template>
       <template #item_text>收藏</template>
     </tab-bar-item>
-    <tab-bar-item class="shopcar">
+    <tab-bar-item class="shopcar" @click="addCart">
       <template #item_text>加入购物车</template>
     </tab-bar-item>
     <tab-bar-item class="buy">
@@ -25,7 +25,19 @@ import TabBar from "components/common/tabbar/TabBar.vue";
 import TabBarItem from "components/common/tabbar/TabBarItem.vue";
 export default {
   components: { TabBar, TabBarItem },
-  name: "BottomBar",
+  name: "DetailBottomBar",
+  methods: {
+    addCart() {
+      const addCart = document.querySelector("#add_cart");
+      const mask = document.querySelector("#mask");
+      // 点击显示AddCart组件，并添加class
+      addCart.style.display = "block";
+      addCart.className = "animate__animated animate__slideInUp";
+      // 显示遮挡层
+      mask.style.display = "block";
+      mask.className = "animate__animated animate__fadeIn";
+    },
+  },
 };
 </script>
 <style scoped>
@@ -35,7 +47,7 @@ export default {
 .shopcar,
 .buy {
   height: 49px;
-  line-height: 49px;
+  line-height: 44px;
 }
 .shopcar {
   padding: 0 5px;

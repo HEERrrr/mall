@@ -16,7 +16,9 @@ export default {
   },
   methods: {
     itemClick() {
-      this.$router.push(this.path);
+      if (this.path) {
+        this.$router.push(this.path);
+      }
     },
   },
   computed: {

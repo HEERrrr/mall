@@ -1,6 +1,8 @@
 <template>
   <div class="navbar">
-    <div class="left"><slot name="left"></slot></div>
+    <div class="left">
+      <slot name="left" v-if="$route.meta.showLeft"></slot>
+    </div>
     <div class="center"><slot name="center"></slot></div>
     <div class="right"><slot name="right"></slot></div>
   </div>
@@ -8,6 +10,12 @@
 <script>
 export default {
   name: "NavBar",
+  methods: {
+    /* showLeft() {
+      if(this.$router.fullPath.indexOf('detail')!==-1) return true;
+      else return 
+    } */
+  },
 };
 </script>
 <style scoped>

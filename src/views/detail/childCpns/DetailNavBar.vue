@@ -1,5 +1,5 @@
 <template>
-  <nav-bar>
+  <nav-bar class="navbar">
     <template #left>
       <span class="iconfont" @click="leftClick">&#xe681;</span>
     </template>
@@ -12,6 +12,9 @@
         ref="tab"
       />
     </template>
+    <template #right
+      ><i class="iconfont right" @click="rightClick">&#xe70b;</i></template
+    >
   </nav-bar>
 </template>
 <script>
@@ -30,11 +33,25 @@ export default {
     leftClick() {
       this.$router.back();
     },
+    rightClick() {
+      this.$router.push("/cart");
+    },
   },
 };
 </script>
 <style scoped>
+.navbar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  z-index: 1;
+  background-color: #f6f6f6;
+}
 .center {
   font-size: 13px;
+}
+.right {
+  font-size: 18px;
 }
 </style>

@@ -1,7 +1,6 @@
 <template>
   <div id="detail">
     <detail-nav-bar
-      class="detail_navBar"
       @tabClick="tabClick"
       :ParentCurrentIndex="currentIndex"
       ref="navBar"
@@ -27,13 +26,19 @@
       />
       <div class="no_more" v-if="isShowNoMore">已经到底了 O_O</div>
     </scroll>
-    <bottom-bar />
+    <detail-bottom-bar />
+    <add-cart :skuInfo="skuInfo" :alert="alert" ref="addCart" />
+    <!-- 遮挡层 -->
+    <masks @click.native="maskClick" />
+    <!-- 提示信息 -->
+    <alert ref="alert"></alert>
   </div>
 </template>
 <script>
 import Scroll from "components/common/scroll/Scroll";
-import BottomBar from "components/content/bottomBar/BottomBar.vue";
 import GoodsList from "components/content/goods/GoodsList.vue";
+import Alert from "components/content/alert/Alert.vue";
+import Masks from "components/content/mask/Masks.vue";
 
 import DetailNavBar from "views/detail/childCpns/DetailNavBar";
 import DetailSwiper from "views/detail/childCpns/DetailSwiper";
@@ -42,6 +47,8 @@ import DetailShopInfo from "views/detail/childCpns/DetailShopInfo";
 import DetailGoodsInfo from "views/detail/childCpns/DetailGoodsInfo";
 import DetailParamsInfo from "views/detail/childCpns/DetailParamsInfo";
 import DetailRateInfo from "views/detail/childCpns/DetailRateInfo.vue";
+import DetailBottomBar from "views/detail/childCpns/DetailBottomBar.vue";
+import AddCart from "views/detail/addCart/AddCart.vue";
 
 import {
   getDetail,
@@ -51,6 +58,7 @@ import {
   GoodsInfo,
   ParamsInfo,
   RateInfo,
+  SkuInfo,
 } from "network/detail.js";
 import { goodsItemMixin } from "common/mixin.js";
 
@@ -59,8 +67,9 @@ export default {
   mixins: [goodsItemMixin],
   components: {
     Scroll,
-    BottomBar,
     GoodsList,
+    Alert,
+    Masks,
 
     DetailNavBar,
     DetailSwiper,
@@ -69,6 +78,8 @@ export default {
     DetailGoodsInfo,
     DetailParamsInfo,
     DetailRateInfo,
+    DetailBottomBar,
+    AddCart,
   },
   data() {
     return {
@@ -80,6 +91,7 @@ export default {
       paramsInfo: {},
       rateInfo: {},
       recommend: [],
+      skuInfo: {},
       position: {
         goods: 0,
         params: 0,
@@ -88,6 +100,7 @@ export default {
       },
       currentIndex: 0,
       isShowNoMore: false,
+      alert: null,
     };
   },
   created() {
@@ -111,12 +124,17 @@ export default {
       this.paramsInfo = new ParamsInfo(data.itemParams);
       // 获取评论信息
       this.rateInfo = data.rate.list ? new RateInfo(data.rate.list[0]) : {};
+      // 获取商品购物车信息
+      this.skuInfo = new SkuInfo(data.skuInfo, this.topImages, data.shopInfo);
     });
     // 请求推荐数据
     getRecommend().then(res => {
       const list = res.data.list;
       this.recommend = list;
     });
+  },
+  mounted() {
+    this.alert = this.$refs.alert;
   },
   methods: {
     goodsImageLoad() {
@@ -172,29 +190,36 @@ export default {
     goodsItemImageLoad() {
       this.refresh();
     },
+    // 点击遮挡层，调用AddCart组件close()方法，关闭组件
+    maskClick() {
+      this.$refs.addCart.close();
+    },
   },
 };
 </script>
 <style scoped>
 #detail {
+  position: relative;
   height: 100vh;
   padding-top: 44px;
 }
-.detail_navBar {
-  position: fixed;
-  left: 0;
-  right: 0;
-  top: 0;
-  z-index: 1;
-  background-color: #fff;
-}
 .wrapper {
-  height: calc(100% - 49px);
+  height: calc(100vh - 49px);
   overflow: hidden;
 }
 .no_more {
   height: 49px;
   line-height: 49px;
   text-align: center;
+}
+#add_cart {
+  position: absolute;
+  top: 70px;
+  display: none;
+  width: 100vw;
+  height: calc(100vh - 70px);
+  padding: 10px;
+  z-index: 2;
+  background-color: #f9f9f9;
 }
 </style>

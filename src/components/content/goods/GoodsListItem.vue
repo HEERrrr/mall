@@ -29,10 +29,6 @@ export default {
       } else if (this.$route.path.indexOf("/detail") == 0) {
         this.$emit("dImageLoad");
       }
-      /**
-       *拿到store中Home.vue传过去的scroll
-       *this.$store.state.scroll.refresh();
-       */
     },
     itemClick() {
       this.$router.push("/detail/" + this.goodsItem.iid);

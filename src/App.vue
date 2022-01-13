@@ -10,6 +10,7 @@
 </template>
 <script>
 import MainTabBar from "components/content/mainTabbar/MainTabBar";
+import "animate.css";
 export default {
   name: "App",
   data() {
