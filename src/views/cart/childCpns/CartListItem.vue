@@ -10,14 +10,14 @@
           <cart-choose
             :index="index"
             :chooseClass="$store.state.cartList[index].shopChecked"
-            @click.native="shopCheckedClick(index)"
+            @click="shopCheckedClick(index)"
           />
           <h4 class="shopName">
             <i class="iconfont">&#xe707;</i>
             {{ item.shopName }}
           </h4>
         </div>
-        <cart-pros-item :cartItem="item" :index="index" />
+        <cart-pros-item :cartItem="item" :index="index" v-bind="$attrs" />
       </div>
     </div>
   </div>
@@ -27,6 +27,7 @@ import CartProsItem from "./CartProsItem.vue";
 import CartChoose from "./CartChoose.vue";
 export default {
   name: "CartListItem",
+  inheritAttrs: false,
   components: {
     CartProsItem,
     CartChoose,

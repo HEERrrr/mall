@@ -23,21 +23,11 @@
 <script>
 import TabBar from "components/common/tabbar/TabBar.vue";
 import TabBarItem from "components/common/tabbar/TabBarItem.vue";
+import { addCartMixin } from "common/mixin.js";
 export default {
   components: { TabBar, TabBarItem },
   name: "DetailBottomBar",
-  methods: {
-    addCart() {
-      const addCart = document.querySelector("#add_cart");
-      const mask = document.querySelector("#mask");
-      // 点击显示AddCart组件，并添加class
-      addCart.style.display = "block";
-      addCart.className = "animate__animated animate__slideInUp";
-      // 显示遮挡层
-      mask.style.display = "block";
-      mask.className = "animate__animated animate__fadeIn";
-    },
-  },
+  mixins: [addCartMixin],
 };
 </script>
 <style scoped>

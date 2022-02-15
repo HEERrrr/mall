@@ -1,30 +1,36 @@
 <template>
   <div id="cart">
     <cart-nav-bar @manageClick="manageClick()" />
-    {{ $store.getters.getTotalCount }}
     <scroll class="wrapper" ref="scroll">
-      <cart-list-item />
+      <cart-list-item @styleClick="styleClick" />
     </scroll>
-    <cart-bottom :showDel="showDel" :alert="alert" />
-    <alert ref="alert"></alert>
-    <masks />
+    <cart-bottom :showDel="showDel" />
+    <add-cart
+      :skuInfo="skuInfo"
+      :styleIndex1="styleIndex"
+      :sizeIndex1="sizeIndex"
+      ref="addCart"
+    />
+    <masks @click="maskClick" />
   </div>
 </template>
 
 <script>
 import Scroll from "components/common/scroll/Scroll.vue";
-import Alert from "components/content/alert/Alert.vue";
+import AddCart from "components/content/addCart/AddCart.vue";
 import Masks from "components/content/mask/Masks.vue";
 
 import CartNavBar from "./childCpns/CartNavBar.vue";
 import CartListItem from "./childCpns/CartListItem.vue";
 import CartBottom from "./childCpns/CartBottom.vue";
 
+import { closeAddCartMixin } from "common/mixin.js";
 export default {
   name: "Cart",
+  mixins: [closeAddCartMixin],
   components: {
     Scroll,
-    Alert,
+    AddCart,
     Masks,
 
     CartNavBar,
@@ -34,11 +40,10 @@ export default {
   data() {
     return {
       showDel: false,
-      alert: null,
+      skuInfo: {},
+      styleIndex: -1,
+      sizeIndex: -1,
     };
-  },
-  mounted() {
-    this.alert = this.$refs.alert;
   },
   activated() {
     this.$refs.scroll.refresh();
@@ -52,6 +57,18 @@ export default {
   methods: {
     manageClick() {
       this.showDel = !this.showDel;
+    },
+    styleClick(skuInfo, index, key) {
+      this.skuInfo = skuInfo;
+
+      // 拿到选中样式的索引
+      this.styleIndex =
+        this.$store.state.cartList[index].products[key].style.styleIndex;
+      this.sizeIndex =
+        this.$store.state.cartList[index].products[key].size.sizeIndex;
+    },
+    maskClick() {
+      this.$refs.addCart.close();
     },
   },
 };

@@ -32,7 +32,7 @@
         @hImageLoad="goodsImageLoad"
       />
     </scroll>
-    <back-top @click.native="backTop" v-show="isShowBackTop" />
+    <back-top @click="backTop" v-show="isShowBackTop" />
   </div>
 </template>
 <script>

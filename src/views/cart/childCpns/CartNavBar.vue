@@ -3,7 +3,7 @@
     <template #left>
       <span class="iconfont" @click="leftClick">&#xe681;</span>
     </template>
-    <template #center>购物车({{ $store.state.totalCount }})</template>
+    <template #center>购物车({{ getTotalCount }})</template>
     <template #right
       ><span
         class="nav_right"
@@ -25,6 +25,17 @@ export default {
     return {
       changeManage: false,
     };
+  },
+  computed: {
+    // 购物车商品总数
+    getTotalCount() {
+      const state = this.$store.state;
+      state.totalCount = 0;
+      for (let i in state.cartList) {
+        state.totalCount += state.cartList[i].products.length;
+      }
+      return state.totalCount;
+    },
   },
   methods: {
     // navbar左箭头

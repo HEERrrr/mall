@@ -14,15 +14,13 @@ export default {
   addCount(state, payload) {
     state.cartList[payload.index].products[payload.key].count += payload.count;
   },
-  // 总数量
-  getTotalCount(state) {
-    let arr = [];
-    for (let i in state.cartList) {
-      arr.splice(i, 1, state.cartList[i].products.length);
-    }
-    state.totalCount = arr.reduce((pre, n) => {
-      return pre + n;
-    }, 0);
+  // 购物车数量减少
+  decreCount(state, { index, key }) {
+    state.cartList[index].products[key].count--;
+  },
+  // 购物车数量增加
+  increCount(state, { index, key }) {
+    state.cartList[index].products[key].count++;
   },
   // 单个商品选中
   proCheckedTrue(state, { index, key }) {

@@ -4,7 +4,7 @@
       <div class="products_item" @click="proItemClick(index, key)">
         <cart-choose
           :chooseClass="$store.state.cartList[index].products[key].proChecked"
-          @click.native.stop="proCheckedClick(index, key)"
+          @click.stop="proCheckedClick(index, key)"
         />
         <div class="products_img">
           <img :src="value.img" alt="" />
@@ -13,8 +13,14 @@
           <h5 class="title">{{ value.title }}</h5>
           <div>
             <div class="style">
-              <div style="overflow: hidden">
-                {{ value.styleName }};{{ value.sizeName }}
+              <div
+                style="overflow: hidden"
+                @click.stop="styleClick(index, key)"
+              >
+                <span
+                  >{{ value.style.styleName }};{{ value.size.sizeName }}</span
+                >
+                <span class="iconfont" style="font-size: 14px">&#xe6b9;</span>
               </div>
             </div>
           </div>
@@ -34,9 +40,13 @@
 </template>
 <script>
 import CartChoose from "./CartChoose.vue";
+
+import { addCartMixin } from "common/mixin.js";
+import { getDetail, SkuInfo } from "network/detail.js";
 export default {
   name: "CartProsItem",
   components: { CartChoose },
+  mixins: [addCartMixin],
   props: {
     cartItem: {
       type: Object,
@@ -47,7 +57,8 @@ export default {
   },
   data() {
     return {
-      iid: String,
+      iid: "",
+      skuInfo: {},
     };
   },
   methods: {
@@ -56,7 +67,7 @@ export default {
       // 数量等于1时点击给出相应提示
       if (count <= 1) {
         this.setAlertText("该宝贝不能减少了哟~");
-      } else this.$store.getters.decreCount(index, key);
+      } else this.$store.commit("decreCount", { index, key });
     },
     increment(index, key) {
       const count = this.$store.state.cartList[index].products[key].count;
@@ -64,7 +75,7 @@ export default {
       // 数量等于库存时给出相应提示
       if (count === stock) {
         this.setAlertText("超出购买数量~");
-      } else this.$store.getters.increCount(index, key);
+      } else this.$store.commit("increCount", { index, key });
     },
     // 点击商品进入其详情页
     proItemClick(index, key) {
@@ -74,6 +85,27 @@ export default {
     // 商品选中
     proCheckedClick(index, key) {
       this.$store.dispatch("ProChecked", { index, key });
+    },
+    // 点击样式，AddCart出现
+    styleClick(index, key) {
+      this.iid = this.$store.state.cartList[index].products[key].iid;
+      getDetail(this.iid).then(res => {
+        const data = res.result;
+        // 获取轮播图 图片信息
+        const topImages = data.itemInfo.topImages;
+        // 获取商品购物车信息
+        this.skuInfo = new SkuInfo(
+          data.skuInfo,
+          topImages,
+          data.shopInfo,
+          data.itemInfo.iid
+        );
+        this.$emit("styleClick", this.skuInfo, index, key);
+      });
+      // 必须数据请求成功之后再让addCart组件显示，否则第一次点击会获取不到数据,导致不显示
+      setTimeout(() => {
+        this.addCart();
+      }, 100);
     },
   },
 };

@@ -27,18 +27,16 @@
       <div class="no_more" v-if="isShowNoMore">已经到底了 O_O</div>
     </scroll>
     <detail-bottom-bar />
-    <add-cart :skuInfo="skuInfo" :alert="alert" ref="addCart" />
+    <add-cart :skuInfo="skuInfo" ref="addCart" />
     <!-- 遮挡层 -->
-    <masks @click.native="maskClick" />
-    <!-- 提示信息 -->
-    <alert ref="alert"></alert>
+    <masks @click="maskClick" />
   </div>
 </template>
 <script>
 import Scroll from "components/common/scroll/Scroll";
 import GoodsList from "components/content/goods/GoodsList.vue";
-import Alert from "components/content/alert/Alert.vue";
 import Masks from "components/content/mask/Masks.vue";
+import AddCart from "components/content/addCart/AddCart.vue";
 
 import DetailNavBar from "views/detail/childCpns/DetailNavBar";
 import DetailSwiper from "views/detail/childCpns/DetailSwiper";
@@ -48,7 +46,6 @@ import DetailGoodsInfo from "views/detail/childCpns/DetailGoodsInfo";
 import DetailParamsInfo from "views/detail/childCpns/DetailParamsInfo";
 import DetailRateInfo from "views/detail/childCpns/DetailRateInfo.vue";
 import DetailBottomBar from "views/detail/childCpns/DetailBottomBar.vue";
-import AddCart from "views/detail/addCart/AddCart.vue";
 
 import {
   getDetail,
@@ -68,8 +65,8 @@ export default {
   components: {
     Scroll,
     GoodsList,
-    Alert,
     Masks,
+    AddCart,
 
     DetailNavBar,
     DetailSwiper,
@@ -79,7 +76,6 @@ export default {
     DetailParamsInfo,
     DetailRateInfo,
     DetailBottomBar,
-    AddCart,
   },
   data() {
     return {
@@ -100,7 +96,6 @@ export default {
       },
       currentIndex: 0,
       isShowNoMore: false,
-      alert: null,
     };
   },
   created() {
@@ -125,16 +120,18 @@ export default {
       // 获取评论信息
       this.rateInfo = data.rate.list ? new RateInfo(data.rate.list[0]) : {};
       // 获取商品购物车信息
-      this.skuInfo = new SkuInfo(data.skuInfo, this.topImages, data.shopInfo);
+      this.skuInfo = new SkuInfo(
+        data.skuInfo,
+        this.topImages,
+        data.shopInfo,
+        data.itemInfo.iid
+      );
     });
     // 请求推荐数据
     getRecommend().then(res => {
       const list = res.data.list;
       this.recommend = list;
     });
-  },
-  mounted() {
-    this.alert = this.$refs.alert;
   },
   methods: {
     goodsImageLoad() {
@@ -204,22 +201,12 @@ export default {
   padding-top: 44px;
 }
 .wrapper {
-  height: calc(100vh - 49px);
+  height: calc(100vh - 94px);
   overflow: hidden;
 }
 .no_more {
   height: 49px;
   line-height: 49px;
   text-align: center;
-}
-#add_cart {
-  position: absolute;
-  top: 70px;
-  display: none;
-  width: 100vw;
-  height: calc(100vh - 70px);
-  padding: 10px;
-  z-index: 2;
-  background-color: #f9f9f9;
 }
 </style>

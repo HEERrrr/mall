@@ -10,12 +10,6 @@
 <script>
 export default {
   name: "NavBar",
-  methods: {
-    /* showLeft() {
-      if(this.$router.fullPath.indexOf('detail')!==-1) return true;
-      else return 
-    } */
-  },
 };
 </script>
 <style scoped>

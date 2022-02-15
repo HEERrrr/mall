@@ -11,11 +11,7 @@
       </span>
     </div>
     <div v-else class="del_alert">
-      <div class="confirm">确定将这1个宝贝删除？</div>
-      <div class="del_bottom">
-        <span style="flex: 1" @click="thinkClick">我再想想</span>
-        <span class="del_text" @click="delClick">删除</span>
-      </div>
+      <slot name="extra"></slot>
     </div>
   </div>
 </template>
@@ -41,30 +37,6 @@ export default {
         animate__fadeIn: this.judgeClass.in,
         animate__fadeOut: this.judgeClass.out,
       };
-    },
-  },
-  methods: {
-    // Mask以及Alert逐渐消失
-    delAnimate() {
-      this.judgeClass.out = true;
-      setTimeout(() => {
-        this.judgeClass.in = this.judgeClass.out = false;
-        this.showDel = false;
-      }, 500);
-      const mask = document.querySelector("#mask");
-      mask.className = "animate__animated animate__fadeOut";
-      setTimeout(() => {
-        mask.style.display = "none";
-      }, 500);
-    },
-    // 点击'我再想想'
-    thinkClick() {
-      this.delAnimate();
-    },
-    // 删除商品
-    delClick() {
-      this.$store.dispatch("queryChecked");
-      this.delAnimate();
     },
   },
 };
@@ -101,7 +73,7 @@ export default {
   background-color: #fff;
   font-size: 14px;
 }
-.del_alert .confirm {
+/* .del_alert .confirm {
   padding: 20px 30px;
   border-radius: 10px 10px 0 0;
   border-bottom: 1px solid rgba(100, 100, 100, 0.1);
@@ -115,5 +87,5 @@ export default {
   flex: 1;
   border-left: 1px solid rgba(100, 100, 100, 0.1);
   color: #ff5777;
-}
+} */
 </style>

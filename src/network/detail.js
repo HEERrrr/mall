@@ -68,7 +68,7 @@ export class RateInfo {
 }
 
 export class SkuInfo {
-  constructor(skuInfo, topImages, shopInfo) {
+  constructor(skuInfo, topImages, shopInfo, iid) {
     this.skus = skuInfo.skus;
     this.style = skuInfo.props[0].list;
     this.size = skuInfo.props[1].list;
@@ -80,5 +80,6 @@ export class SkuInfo {
     this.sizeKey = skuInfo.sizeKey;
     this.title = skuInfo.title;
     this.shopName = shopInfo.name;
+    this.iid = iid;
   }
 }

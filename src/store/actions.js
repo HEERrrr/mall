@@ -11,8 +11,10 @@ export default {
       const productsItem = cartItem.products.find(
         item =>
           item.iid === payload.products[0].iid &&
-          item.styleName === payload.products[0].styleName &&
-          item.sizeName === payload.products[0].sizeName
+          /* item.styleName === payload.products[0].styleName &&
+          item.sizeName === payload.products[0].sizeName */
+          item.style.styleName === payload.products[0].style.styleName &&
+          item.size.sizeName === payload.products[0].size.sizeName
       );
       // 如果是同一件商品，并且选中样式完全一样,增加其商品数量
       if (productsItem) {
@@ -28,13 +30,10 @@ export default {
           index: index,
           products: payload.products,
         });
-        // 修改总数量
-        commit("getTotalCount");
       }
     } else {
       // cartList中没有和payload一家店的，将payload添加进购物车列表里
       commit("addToCart", payload);
-      commit("getTotalCount");
     }
 
     // 每次添加商品,取消所有选中
@@ -133,7 +132,6 @@ export default {
       // 将选中店铺及店铺内所有商品删除
       if (cartList[i].shopChecked) {
         commit("delShop", i);
-        commit("getTotalCount");
         // 如果购物车内没有商品，全选按钮false
         if (state.totalCount === 0) commit("allCheckedFalse");
       } else {
@@ -141,7 +139,6 @@ export default {
         for (let k in cartList[i].products) {
           if (cartList[i].products[k].proChecked) {
             commit("delPros", { i, k });
-            commit("getTotalCount");
           }
         }
       }
