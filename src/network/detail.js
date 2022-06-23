@@ -72,9 +72,9 @@ export class SkuInfo {
     this.skus = skuInfo.skus;
     this.style = skuInfo.props[0].list;
     this.size = skuInfo.props[1].list;
-    this.defaultImg = topImages[0];
+    // this.defaultImg = topImages[0];
     this.topImg = topImages[0];
-    this.defaultPrice = skuInfo.defaultPrice;
+    // this.defaultPrice = skuInfo.defaultPrice;
     this.price = skuInfo.defaultPrice;
     this.styleKey = skuInfo.styleKey;
     this.sizeKey = skuInfo.sizeKey;

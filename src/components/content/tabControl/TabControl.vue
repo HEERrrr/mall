@@ -28,10 +28,6 @@ export default {
       type: String,
       default: "#ff5777",
     },
-    // 接收父组件传值
-    ParentCurrentIndex: {
-      type: Number,
-    },
   },
   data() {
     return {

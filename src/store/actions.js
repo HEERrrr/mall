@@ -2,32 +2,29 @@ export default {
   // 判断添加商品的位置/添加数量
   addPurchaseInfo({ state, commit }, payload) {
     // 查找购物车列表中是否有 和传入的payload是同一家店的
-    const cartItem = state.cartList.find(
+    const cartList = state.cartList;
+    const shopIndex = cartList.findIndex(
       item => item.shopName === payload.shopName
     );
-    if (cartItem) {
-      const index = state.cartList.indexOf(cartItem);
+    if (shopIndex !== -1) {
       // 查找同一家店的列表里是否有同一件商品，并且是否和传入payload的颜色,尺码一样
-      const productsItem = cartItem.products.find(
+      const proIndex = cartList[shopIndex].products.findIndex(
         item =>
           item.iid === payload.products[0].iid &&
-          /* item.styleName === payload.products[0].styleName &&
-          item.sizeName === payload.products[0].sizeName */
           item.style.styleName === payload.products[0].style.styleName &&
           item.size.sizeName === payload.products[0].size.sizeName
       );
       // 如果是同一件商品，并且选中样式完全一样,增加其商品数量
-      if (productsItem) {
-        const key = cartItem.products.indexOf(productsItem);
+      if (proIndex !== -1) {
         commit("addCount", {
-          index: index,
-          key: key,
+          index: shopIndex,
+          key: proIndex,
           count: payload.products[0].count,
         });
       } else {
         // 如果不是同一件/颜色尺码不一样，将其添加到products中
         commit("addToProducts", {
-          index: index,
+          index: shopIndex,
           products: payload.products,
         });
       }
@@ -124,7 +121,7 @@ export default {
       }
     }
   },
-  // 查询选中了哪些店铺，商品
+  // 查询选中了哪些店铺，商品，将选中删除
   queryChecked({ state, commit }) {
     const cartList = state.cartList;
 

@@ -7,7 +7,6 @@
       <i class="iconfont">&#xe8b9;</i>
       <span>{{ goodsItem.cfav }}</span>
     </div>
-    <div class="info"></div>
   </div>
 </template>
 <script>
@@ -39,7 +38,10 @@ export default {
       /* return this.goodsItem.image
         ? this.goodsItem.image
         : this.goodsItem.show.img; */
-      return this.goodsItem.image || this.goodsItem.show.img;
+      return (
+        // 注意.show.img放在最后,因为如果.show是undefined,.show.img会报错
+        this.goodsItem.image || this.goodsItem.img || this.goodsItem.show.img
+      );
     },
   },
 };

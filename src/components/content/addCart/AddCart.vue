@@ -1,5 +1,5 @@
 <template>
-  <div id="add_cart" v-if="Object.keys(skuInfo).length !== 0">
+  <div id="add_cart">
     <div class="top">
       <div class="top_img">
         <img :src="skuInfo.topImg" />
@@ -31,7 +31,7 @@
         <span>{{ item.name }}</span>
       </div>
     </div>
-    <div class="amount">
+    <div class="amount" v-if="$route.path !== '/cart'">
       <span>购买数量</span>
       <span class="stock" :style="{ color: stockTextColor }">{{
         stock.text
@@ -51,29 +51,32 @@ export default {
   name: "AddCart",
   mixins: [closeAddCartMixin],
   props: {
-    skuInfo: {
-      type: Object,
-    },
+    skuInfo1: Object,
     styleIndex1: {
       type: Number,
+      default: -1,
     },
     sizeIndex1: {
       type: Number,
+      default: -1,
     },
+    proIndex: Number,
   },
   data() {
     return {
+      skuInfo: this.skuInfo1,
       count: 1,
       cartCount: 0,
-      styleIndex: -1,
-      sizeIndex: -1,
-      currency: "￥",
+      styleIndex: this.styleIndex1,
+      sizeIndex: this.sizeIndex1,
       stock: {
         num: Number,
         text: "有货",
       },
       stockTextColor: "#999",
-      timer: null,
+      defaultImg: this.skuInfo1.topImg,
+      defaultPrice: this.skuInfo1.price,
+      products: {},
     };
   },
   // style(size)Index跟随传入的style(size)Index1改变
@@ -120,25 +123,22 @@ export default {
     judgeCartCountMax() {
       const cartList = this.$store.state.cartList;
       // 在购物车列表查找
-      const cartItem = cartList.find(
+      const shopIndex = cartList.findIndex(
         item => item.shopName === this.skuInfo.shopName
       );
-      if (cartItem) {
-        const index = cartList.indexOf(cartItem);
+      if (shopIndex !== -1) {
         // 在找到的商品里查找其中是否有当前选中的样式
-        const productsItem = cartItem.products.find(
+        const proIndex = cartList[shopIndex].products.findIndex(
           item =>
             item.style.styleName === this.skuInfo.style[this.styleIndex].name &&
             item.size.sizeName === this.skuInfo.size[this.sizeIndex].name
         );
-        if (productsItem) {
-          // 拿到选中样式商品在products中的索引号
-          const key = cartItem.products.indexOf(productsItem);
+        if (proIndex !== -1) {
           // 如果购物车内此商品的数量已达库存最大,保持count=0
-          if (cartList[index].products[key].count === this.stock.num) {
+          if (cartList[shopIndex].products[proIndex].count === this.stock.num) {
             this.count = 0;
           }
-          this.cartCount = cartList[index].products[key].count;
+          this.cartCount = cartList[shopIndex].products[proIndex].count;
         } else this.cartCount = 0;
       }
     },
@@ -147,8 +147,8 @@ export default {
       if (this.styleIndex === index) {
         this.styleIndex = -1;
         this.setStockStyle("有货", 1, "#999");
-        this.skuInfo.topImg = this.skuInfo.defaultImg;
-        this.skuInfo.price = this.skuInfo.defaultPrice;
+        this.skuInfo.topImg = this.defaultImg;
+        this.skuInfo.price = this.defaultPrice;
       } else {
         this.styleIndex = index;
         if (this.sizeIndex !== -1) {
@@ -191,6 +191,26 @@ export default {
         }
       } else ++this.count;
     },
+    // products对象传值
+    setProducts() {
+      this.products = {
+        iid: this.skuInfo.iid,
+        img: this.skuInfo.topImg,
+        title: this.skuInfo.title,
+        style: {
+          styleIndex: this.styleIndex,
+          styleName: this.skuInfo.style[this.styleIndex].name,
+        },
+        size: {
+          sizeIndex: this.sizeIndex,
+          sizeName: this.skuInfo.size[this.sizeIndex].name,
+        },
+        price: this.skuInfo.price,
+        count: this.count,
+        stock: this.stock.num,
+        proChecked: false,
+      };
+    },
     // 没有选择颜色/尺码或者缺货时,给出提示信息
     confirmClick() {
       if (this.styleIndex === -1) {
@@ -208,10 +228,35 @@ export default {
               ? this.$toast.setNormalText("该商品暂时缺货")
               : this.$toast.setNormalText("库存不足,请先处理购物车内此商品~");
           } else {
-            this.addPurchaseInfo();
+            // 在购物车界面点击样式时的情况
+            if (this.$route.path === "/cart") {
+              const i = this.$store.state.cartList.findIndex(
+                item => item.shopName == this.skuInfo.shopName
+              );
+              const k = this.$store.state.cartList[i].products.findIndex(
+                item =>
+                  item.style.styleIndex === this.styleIndex &&
+                  item.size.sizeIndex === this.sizeIndex
+              );
+              // 如果购物车内存在当前选中的样式(且不是被点击商品)，则将被点击的商品删除
+              if (k !== -1 && k !== this.proIndex) {
+                // 把点击商品删除
+                this.$store.commit("delPros", { i, k: this.proIndex });
+              } else {
+                // 不存在则将被点击的商品样式更换为当前选中样式
+                this.setProducts();
+                this.$store.commit("updatePros", {
+                  i: i,
+                  k: this.proIndex,
+                  payload: this.products,
+                });
+              }
+            } else {
+              this.addPurchaseInfo();
+              // 添加成功的提示信息
+              this.$toast.setNormalText("添加成功,在购物车等您~", true);
+            }
             this.close();
-            // 添加成功的提示信息
-            this.$toast.setNormalText("添加成功,在购物车等您~", true);
             // 判断购物车数量，与库存对比
             this.judgeCartCountMax();
             if (this.count === this.stock.num) {
@@ -224,30 +269,13 @@ export default {
       }
     },
     addPurchaseInfo() {
+      this.setProducts();
       // 将商品加入vuex的购物车列表
       this.$store.dispatch("addPurchaseInfo", {
         shopName: this.skuInfo.shopName,
         shopChecked: false,
         proCheckedNum: 0,
-        products: [
-          {
-            iid: this.skuInfo.iid,
-            img: this.skuInfo.topImg,
-            title: this.skuInfo.title,
-            style: {
-              styleIndex: this.styleIndex,
-              styleName: this.skuInfo.style[this.styleIndex].name,
-            },
-            size: {
-              sizeIndex: this.sizeIndex,
-              sizeName: this.skuInfo.size[this.sizeIndex].name,
-            },
-            price: this.skuInfo.price,
-            count: this.count,
-            stock: this.stock.num,
-            proChecked: false,
-          },
-        ],
+        products: [this.products],
       });
     },
   },

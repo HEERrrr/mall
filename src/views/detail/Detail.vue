@@ -27,7 +27,7 @@
       <div class="no_more" v-if="isShowNoMore">已经到底了 O_O</div>
     </scroll>
     <detail-bottom-bar />
-    <add-cart :skuInfo="skuInfo" ref="addCart" />
+    <add-cart v-if="Object.keys(skuInfo).length" :skuInfo1="skuInfo" />
     <!-- 遮挡层 -->
     <masks @click="maskClick" />
   </div>
@@ -57,11 +57,11 @@ import {
   RateInfo,
   SkuInfo,
 } from "network/detail.js";
-import { goodsItemMixin } from "common/mixin.js";
+import { goodsItemMixin, closeAddCartMixin } from "common/mixin.js";
 
 export default {
   name: "Detail",
-  mixins: [goodsItemMixin],
+  mixins: [goodsItemMixin, closeAddCartMixin],
   components: {
     Scroll,
     GoodsList,
@@ -122,6 +122,7 @@ export default {
       // 获取商品购物车信息
       this.skuInfo = new SkuInfo(
         data.skuInfo,
+        // data.topImages,
         this.topImages,
         data.shopInfo,
         data.itemInfo.iid
@@ -189,7 +190,7 @@ export default {
     },
     // 点击遮挡层，调用AddCart组件close()方法，关闭组件
     maskClick() {
-      this.$refs.addCart.close();
+      this.close();
     },
   },
 };

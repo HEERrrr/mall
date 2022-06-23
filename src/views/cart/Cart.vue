@@ -6,9 +6,11 @@
     </scroll>
     <cart-bottom :showDel="showDel" />
     <add-cart
-      :skuInfo="skuInfo"
+      v-if="Object.keys(skuInfo).length"
+      :skuInfo1="skuInfo"
       :styleIndex1="styleIndex"
       :sizeIndex1="sizeIndex"
+      :proIndex="key"
       ref="addCart"
     />
     <masks @click="maskClick" />
@@ -43,6 +45,8 @@ export default {
       skuInfo: {},
       styleIndex: -1,
       sizeIndex: -1,
+      key: -1,
+      price: 0,
     };
   },
   activated() {
@@ -66,9 +70,15 @@ export default {
         this.$store.state.cartList[index].products[key].style.styleIndex;
       this.sizeIndex =
         this.$store.state.cartList[index].products[key].size.sizeIndex;
+      this.key = key;
+      this.price = this.$store.state.cartList[index].products[key].price;
+
+      setTimeout(() => {
+        this.$refs.addCart.judgeStock();
+      }, 1);
     },
     maskClick() {
-      this.$refs.addCart.close();
+      this.close();
     },
   },
 };

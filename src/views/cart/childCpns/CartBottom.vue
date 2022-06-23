@@ -88,7 +88,6 @@ export default {
         this.$toast.setDelContent("确定将这 " + checkedNum + " 个宝贝删除？");
     },
   },
-  // watch: {},
 };
 </script>
 <style scoped>

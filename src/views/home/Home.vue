@@ -121,7 +121,7 @@ export default {
       this.getHomeGoods(this.currentType);
     },
     goodsImageLoad() {
-      this.refresh();
+      this.$refs.scroll.refresh();
     },
     swiperImageLoad() {
       // 计算tabControl距顶部距离

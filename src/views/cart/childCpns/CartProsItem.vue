@@ -89,23 +89,24 @@ export default {
     // 点击样式，AddCart出现
     styleClick(index, key) {
       this.iid = this.$store.state.cartList[index].products[key].iid;
-      getDetail(this.iid).then(res => {
-        const data = res.result;
-        // 获取轮播图 图片信息
-        const topImages = data.itemInfo.topImages;
-        // 获取商品购物车信息
-        this.skuInfo = new SkuInfo(
-          data.skuInfo,
-          topImages,
-          data.shopInfo,
-          data.itemInfo.iid
-        );
-        this.$emit("styleClick", this.skuInfo, index, key);
-      });
-      // 必须数据请求成功之后再让addCart组件显示，否则第一次点击会获取不到数据,导致不显示
-      setTimeout(() => {
-        this.addCart();
-      }, 100);
+      getDetail(this.iid)
+        .then(res => {
+          const data = res.result;
+          // 获取轮播图 图片信息
+          const topImages = data.itemInfo.topImages;
+          // 获取商品购物车信息
+          this.skuInfo = new SkuInfo(
+            data.skuInfo,
+            topImages,
+            data.shopInfo,
+            data.itemInfo.iid
+          );
+          this.$emit("styleClick", this.skuInfo, index, key);
+        })
+        .then(() => {
+          // 必须数据请求成功之后再让addCart组件显示，否则第一次点击会获取不到数据,导致不显示
+          this.addCart();
+        });
     },
   },
 };

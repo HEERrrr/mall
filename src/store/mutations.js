@@ -62,15 +62,25 @@ export default {
   delPros(state, { i, k }) {
     const cartList = state.cartList;
 
-    // 删除数量取决于选中数量
-    cartList[i].products.splice(k, cartList[i].proCheckedNum);
-    cartList[i].proCheckedNum -= cartList[i].proCheckedNum;
+    cartList[i].products.splice(k, 1);
+    cartList[i].proCheckedNum = 0;
   },
   // 删除店铺及店内所有商品
   delShop(state, i) {
     const cartList = state.cartList;
 
     cartList.splice(i, state.shopCheckedNum);
-    state.shopCheckedNum -= state.shopCheckedNum;
+    state.shopCheckedNum = 0;
+  },
+  // 更改商品
+  updatePros(state, { i, k, payload }) {
+    const cartList = state.cartList;
+
+    cartList[i].products.splice(k, 1, payload);
+    // cartList[i].products[k].img = payload.img;
+    // cartList[i].products[k].price = payload.price;
+    // cartList[i].products[k].stock = payload.stock;
+    // cartList[i].products[k].size = payload.size;
+    // cartList[i].products[k].style = payload.style;
   },
 };
